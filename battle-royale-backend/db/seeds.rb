@@ -5,6 +5,10 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+Attack.destroy_all
+Character.destroy_all
+Team.destroy_all
+
 
 flame_pillar = Attack.find_or_create_by!(name: "Flame Pillar", element: "fire", damage: 25)
 fire_flame = Attack.find_or_create_by(name: "Fire Flame", element: "fire", damage: 10)

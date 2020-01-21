@@ -105,6 +105,7 @@ function nextChar(){
     form.appendChild(inputName)
     form.appendChild(inputFocus)
     form.appendChild(inputSubmit)
+    form.addEventListener("submit", createCharacter)
 
     main.appendChild(form)
 
@@ -119,13 +120,67 @@ function createCharacter(e){
         "name": e.target["char-name"].value,
         "focus": e.target["char-focus"].value,
         'health': 100,
+        "attacks": chooseAttacks(),
         team_id: team.id
+
     }
+
+    fetch("http://localhost:3000/characters", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        },
+        body: JSON.stringify(newC)
+    })
+    .then(resp => resp.json())
+    .then(json => renderCharacter(json))
 
 }
 
-function renderCharacter(){
+function renderCharacter(char){
+    console.log(char)
+    let div = document.createElement("div")
+    div.className = "character-card"
 
+    let charH = document.createElement("h6")
+    charH.textContent = char.name
+
+    let br = document.createElement("br")
+
+    let span = document.createElement("span")
+    span.textContent = `Health: ${char.health}`
+
+    let focus = document.createElement("i")
+
+    switch(char.focus){
+        case 'fire':
+            focus.className = "mdi mdi-fire"
+            break;
+        case 'ice':
+            focus.className = "mdi mdi-snowflake"
+            break;
+        case 'earth':
+            focus.className = "mdi mdi-basecamp"
+            break;
+        case 'water':
+            focus.className = "mdi mdi-water"
+            break;
+    }
+
+    console.log(focus)
+
+    div.appendChild(charH)
+    // div.appendChild(br)
+    div.appendChild(span)
+    div.appendChild(focus)
+
+    main.appendChild(div)
+
+}
+
+function chooseAttacks(){
+    let inputAttack = document.createElement("select")
 }
 
 function clear(item){
