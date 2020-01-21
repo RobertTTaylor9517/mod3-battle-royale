@@ -54,10 +54,10 @@ floorB8 = Floor.create!(dungeon_id: dungeon2.id)
 floorB9 = Floor.create!(dungeon_id: dungeon2.id)
 floorB10 = Floor.create!(dungeon_id: dungeon2.id)
 
-goblinAttacks = [rush, strike]
-mermenAttacks = [wave, water_wheel]
-golemAttacks = [quake, rush, quake]
-fGolemAttacks = [flame_pillar, flame_pillar, quake, rush]
+goblinAttacks = [rush.id, strike.id]
+mermenAttacks = [wave.id, water_wheel.id]
+golemAttacks = [quake.id, rush.id, quake.id]
+fGolemAttacks = [flame_pillar.id, flame_pillar.id, quake.id, rush.id]
 
 goblinA1 = Enemy.create!(name: "Goblin", health: 80, weakness: "fire", attacks: goblinAttacks, floor_id: floorA1.id)
 goblinA2 = Enemy.create!(name: "Goblin", health: 80, weakness: "fire", attacks: goblinAttacks, floor_id: floorA1.id)
