@@ -5,7 +5,7 @@ class CharactersController < ApplicationController
         params["attacks"].each do |at|
             character.attacks.push(at)
         end
-        byebug
+        # byebug
         if(character.save!)
             render json: character
         end

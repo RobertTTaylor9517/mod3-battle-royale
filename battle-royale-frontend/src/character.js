@@ -78,9 +78,11 @@ function nextChar(){
     inputName.type = "text"
     inputName.name = "char-name"
     inputName.setAttribute("placeholder", "Enter Character Name")
+    let br1 = document.createElement("br")
 
     let inputFocus = document.createElement("select")
     inputFocus.name = "char-focus"
+    let br2 = document.createElement("br")
 
     let fire = document.createElement("option")
     fire.value = "fire"
@@ -103,18 +105,24 @@ function nextChar(){
     let charAtt = chooseAttacks();
     charAtt.name = "char-attack[]"
     console.log(charAtt)
+    let br3 = document.createElement("br")
 
     let inputSubmit = document.createElement("input")
     inputSubmit.type = "submit"
     inputSubmit.value = "Submit"
 
     form.appendChild(inputName)
+    form.appendChild(br1)
     form.appendChild(inputFocus)
+    form.appendChild(br2)
     form.appendChild(charAtt)
+    form.appendChild(br3)
     form.appendChild(inputSubmit)
     form.addEventListener("submit", createCharacter)
 
-    main.appendChild(form)
+    divChar.appendChild(form)
+
+    main.appendChild(divChar)
 
 
 
@@ -122,35 +130,42 @@ function nextChar(){
 
 function createCharacter(e){
     e.preventDefault();
-    let selectArray = []
-    let element = e.target["char-attack[]"]
-    for(let i=0;i<element.length;i++){
-        if(element[i].selected){
-            selectArray.push(element[i].value)
+    if(char_count < 4){
+        let selectArray = []
+        let element = e.target["char-attack[]"]
+        for(let i=0;i<element.length;i++){
+            if(element[i].selected){
+                selectArray.push(element[i].value)
+            }
         }
+
+        let newC = {
+            "name": e.target["char-name"].value,
+            "focus": e.target["char-focus"].value,
+            'health': 100,
+            attacks: selectArray,
+            team_id: team.id
+
+        }
+
+        // console.log(newC)
+
+        fetch("http://localhost:3000/characters", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify(newC)
+        })
+        .then(resp => resp.json())
+        .then(json => {
+            char_count++
+            renderCharacter(json)
+        })
+    }else{
+        alert("You already have four characters")
     }
-
-    let newC = {
-        "name": e.target["char-name"].value,
-        "focus": e.target["char-focus"].value,
-        'health': 100,
-        attacks: selectArray,
-        team_id: team.id
-
-    }
-
-    // console.log(newC)
-
-    fetch("http://localhost:3000/characters", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-        },
-        body: JSON.stringify(newC)
-    })
-    .then(resp => resp.json())
-    .then(json => renderCharacter(json))
 
 }
 
@@ -159,7 +174,7 @@ function renderCharacter(char){
     let div = document.createElement("div")
     div.className = "character-card"
 
-    let charH = document.createElement("h6")
+    let charH = document.createElement("p")
     charH.textContent = char.name
 
     let br = document.createElement("br")

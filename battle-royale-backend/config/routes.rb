@@ -3,7 +3,9 @@ Rails.application.routes.draw do
   get "/attacks", to: "attacks#index"
   post "/users", to: "users#create"
   get "/users", to: "users#index"
+  get "/users/:id", to: "users#show"
   post "/teams", to: "teams#create"
   post "/characters", to: "characters#create"
   get "/dungeons", to: "dungeons#index"
+  get "/dungeons/:id", to: "dungeons#show"
 end
