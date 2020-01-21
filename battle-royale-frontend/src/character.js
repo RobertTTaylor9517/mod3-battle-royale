@@ -70,6 +70,8 @@ function createTeam(e){
 function nextChar(){
     clear(main);
 
+    let divChar = document.createElement("div")
+
     let form = document.createElement("form")
 
     let inputName = document.createElement("input")
@@ -98,12 +100,17 @@ function nextChar(){
     inputFocus.appendChild(earth)
     inputFocus.appendChild(water)
 
+    let charAtt = chooseAttacks();
+    charAtt.name = "char-attack[]"
+    console.log(charAtt)
+
     let inputSubmit = document.createElement("input")
     inputSubmit.type = "submit"
     inputSubmit.value = "Submit"
 
     form.appendChild(inputName)
     form.appendChild(inputFocus)
+    form.appendChild(charAtt)
     form.appendChild(inputSubmit)
     form.addEventListener("submit", createCharacter)
 
@@ -115,15 +122,24 @@ function nextChar(){
 
 function createCharacter(e){
     e.preventDefault();
+    let selectArray = []
+    let element = e.target["char-attack[]"]
+    for(let i=0;i<element.length;i++){
+        if(element[i].selected){
+            selectArray.push(element[i].value)
+        }
+    }
 
     let newC = {
         "name": e.target["char-name"].value,
         "focus": e.target["char-focus"].value,
         'health': 100,
-        "attacks": chooseAttacks(),
+        attacks: selectArray,
         team_id: team.id
 
     }
+
+    // console.log(newC)
 
     fetch("http://localhost:3000/characters", {
         method: "POST",
@@ -181,6 +197,16 @@ function renderCharacter(char){
 
 function chooseAttacks(){
     let inputAttack = document.createElement("select")
+    inputAttack.setAttribute("multiple", "multiple")
+
+    attacks.forEach(attack => {
+        var attackOp = document.createElement("option")
+        attackOp.value = attack.id
+        attackOp.textContent = attack.name
+        inputAttack.appendChild(attackOp)
+    })
+
+    return inputAttack;
 }
 
 function clear(item){
