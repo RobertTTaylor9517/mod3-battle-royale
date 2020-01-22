@@ -21,7 +21,7 @@ function startApp(){
     form.appendChild(submit)
     form.addEventListener("submit", addUser)
 
-    main.appendChild(form)
+    leftDiv.appendChild(form)
 
     fetchUsers()
 }
@@ -67,7 +67,7 @@ function renderUsers(json){
 
     let userH = document.createElement("h3")
     userH.textContent = "Choose User"
-    main.appendChild(userH)
+    leftDiv.appendChild(userH)
 
     json.forEach(use => {
         renderUser(use)
@@ -89,8 +89,8 @@ function renderUser(use){
 
     let br = document.createElement("br")
 
-    main.appendChild(button)
-    main.appendChild(br)
+    leftDiv.appendChild(button)
+    leftDiv.appendChild(br)
 }
 
 

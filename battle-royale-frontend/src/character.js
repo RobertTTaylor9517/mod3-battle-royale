@@ -1,6 +1,6 @@
-let main = document.getElementById("main")
 let user_id
-let team 
+let team_id
+let team = []
 let char_count = 0
 
 class Character{
@@ -16,7 +16,7 @@ class Character{
 function startNext(id){
     user_id = id 
     console.log(user_id)
-    clear(main);
+    clear(leftDiv);
 
     let form = document.createElement("form")
 
@@ -36,7 +36,7 @@ function startNext(id){
 
     form.addEventListener("submit", createTeam)
 
-    main.appendChild(form)
+    leftDiv.appendChild(form)
 }
 
 function createTeam(e){
@@ -61,16 +61,17 @@ function createTeam(e){
     .then(resp => resp.json())
     .then(json => {
         console.log(json)
-        team = json
+        team_id =json.id 
         nextChar();
     })
     .catch(err => alert(err))
 }
 
 function nextChar(){
-    clear(main);
+    clear(leftDiv);
 
     let divChar = document.createElement("div")
+    divChar.id = "character-create"
 
     let form = document.createElement("form")
 
@@ -122,7 +123,7 @@ function nextChar(){
 
     divChar.appendChild(form)
 
-    main.appendChild(divChar)
+    midDiv.appendChild(divChar)
 
 
 
@@ -144,7 +145,7 @@ function createCharacter(e){
             "focus": e.target["char-focus"].value,
             'health': 100,
             attacks: selectArray,
-            team_id: team.id
+            team_id: team_id
 
         }
 
@@ -161,11 +162,17 @@ function createCharacter(e){
         .then(resp => resp.json())
         .then(json => {
             char_count++
+            team.push(json)
             renderCharacter(json)
+            if(char_count === 4){
+                fetchGame();
+            }
         })
     }else{
         alert("You already have four characters")
     }
+
+    e.target.reset();
 
 }
 
@@ -202,11 +209,10 @@ function renderCharacter(char){
     console.log(focus)
 
     div.appendChild(charH)
-    // div.appendChild(br)
     div.appendChild(span)
     div.appendChild(focus)
 
-    main.appendChild(div)
+    leftDiv.appendChild(div)
 
 }
 
