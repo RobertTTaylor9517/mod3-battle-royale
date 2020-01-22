@@ -69,7 +69,7 @@ function startDungeon(e){
 }
 
 function startFloor(){
-
+    i = 0
     renderEnemies(selectDungeon.floors[j])
     startBattle()
     
