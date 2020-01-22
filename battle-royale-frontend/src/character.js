@@ -180,6 +180,7 @@ function renderCharacter(char){
     console.log(char)
     let div = document.createElement("div")
     div.className = "character-card"
+    div.dataset.charId = char.id 
 
     let charH = document.createElement("p")
     charH.textContent = char.name
@@ -187,7 +188,12 @@ function renderCharacter(char){
     let br = document.createElement("br")
 
     let span = document.createElement("span")
-    span.textContent = `Health: ${char.health}`
+    span.textContent = "Health: "
+
+    let spanh = document.createElement("span")
+    spanh.textContent = char.health 
+    spanh.className = "char-health"
+    span.appendChild(spanh)
 
     let focus = document.createElement("i")
 
