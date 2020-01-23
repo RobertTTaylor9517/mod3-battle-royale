@@ -27,7 +27,7 @@ wave = Attack.find_or_create_by(name: "Wave", element: "water", damage: 18)
 flood = Attack.find_or_create_by(name: "Flood", element: "water", damage: 30)
 rush = Attack.find_or_create_by(name: "Rush", element: "none", damage: 15)
 strike = Attack.find_or_create_by(name: "Strike", element: "none", damage: 6)
-heal = Attack.find_or_create_by(name: "Heal", element: "medic", damage: -25)
+heal = Attack.find_or_create_by(name: "Heal", element: "medic", damage: 25)
 
 dungeon1 = Dungeon.find_or_create_by(name: "Dungeon 1")
 dungeon2 = Dungeon.find_or_create_by(name: "Dungeon 2")

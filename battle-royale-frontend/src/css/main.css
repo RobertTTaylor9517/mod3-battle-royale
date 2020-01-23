@@ -1,3 +1,10 @@
+* {
+    font-family: 'Press Start 2P', cursive;
+}
+body {
+    background: url("background.jpg") no-repeat;
+    background-size: 100% 100%;
+}
 .row {
     display: flex;
 }
@@ -15,6 +22,22 @@
 
 .enemy-card {
     border-style: dotted dashed solid double;
+    background-color: black;
+    color: white;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+}
+
+.centeredAl {
+    position: relative;
+    left: 30px;
+}
+
+.title {
+    border-style: dotted;
     background-color: black;
     color: white;
 }

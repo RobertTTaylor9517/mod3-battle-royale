@@ -1,12 +1,16 @@
 let user
+let mainDiv
 document.addEventListener("DOMContentLoaded",()=>{
 
     startApp();
 })
 
 function startApp(){
-    let main = document.getElementById("main")
+    mainDiv = document.createElement("div")
+    mainDiv.className = "centered"
+
     let form = document.createElement("form")
+    form.className = "centered"
 
     let input = document.createElement("input")
     input.type = "text"
@@ -17,11 +21,16 @@ function startApp(){
     submit.type = "submit"
     submit.value = "Submit"
 
+    let br = document.createElement("br")
+
     form.appendChild(input)
     form.appendChild(submit)
     form.addEventListener("submit", addUser)
 
-    leftDiv.appendChild(form)
+    mainDiv.appendChild(form)
+    mainDiv.appendChild(br)
+    
+    midDiv.appendChild(mainDiv)
 
     fetchUsers()
 }
@@ -65,10 +74,14 @@ function fetchUsers(){
 function renderUsers(json){
     let main = document.getElementById("main")
 
+    let userDiv = document.createElement("div")
+    userDiv.className = "title centeredAl"
+    userDiv.setAttribute("align", "center")
     let userH = document.createElement("h3")
     userH.textContent = "Choose User"
-    leftDiv.appendChild(userH)
 
+    userDiv.appendChild(userH)
+    mainDiv.appendChild(userDiv)
     json.forEach(use => {
         renderUser(use)
     })
@@ -79,18 +92,21 @@ function renderUsers(json){
 function renderUser(use){
 
     let button = document.createElement("button")
+    button.className = "centeredAl"
     button.textContent = use.username
     button.dataset.userId = use.id 
     console.log(button)
     button.addEventListener("click",(e) => {
-        let id = e.target.dataset.userId
-        startNext(id)
+        user = e.target.dataset.userId
+        startNext(user)
     })
 
     let br = document.createElement("br")
+    let br2 = document.createElement("br2")
 
-    leftDiv.appendChild(button)
-    leftDiv.appendChild(br)
+    mainDiv.appendChild(br2)
+    mainDiv.appendChild(button)
+    mainDiv.appendChild(br)
 }
 
 

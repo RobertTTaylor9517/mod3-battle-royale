@@ -16,7 +16,7 @@ class Character{
 function startNext(id){
     user_id = id 
     console.log(user_id)
-    clear(leftDiv);
+    clear(midDiv);
 
     let form = document.createElement("form")
 
@@ -37,6 +37,8 @@ function startNext(id){
     form.addEventListener("submit", createTeam)
 
     leftDiv.appendChild(form)
+
+    renderTeams();
 }
 
 function createTeam(e){
@@ -61,8 +63,34 @@ function createTeam(e){
     .then(resp => resp.json())
     .then(json => {
         console.log(json)
-        team_id =json.id 
-        nextChar();
+        renderTeam(json)
+    })
+    .catch(err => alert(err))
+}
+
+function renderTeam(use){
+    let button = document.createElement("button")
+    button.textContent = use.name
+    button.dataset.userId = use.id 
+    console.log(button)
+    button.addEventListener("click",(e) => {
+        team_id = e.target.dataset.userId
+        nextChar()
+    })
+
+    let br = document.createElement("br")
+
+    leftDiv.appendChild(button)
+    leftDiv.appendChild(br)
+}
+
+function renderTeams(){
+    console.log("rendering teams")
+    fetch(`http://localhost:3000/users/${user_id}`)
+    .then(resp => resp.json())
+    .then(json => {
+        console.log(json)
+        json.teams.forEach(team => renderTeam(team))
     })
     .catch(err => alert(err))
 }
@@ -102,6 +130,7 @@ function nextChar(){
     inputFocus.appendChild(ice)
     inputFocus.appendChild(earth)
     inputFocus.appendChild(water)
+    inputFocus.addEventListener("change", filterAtt)
 
     let charAtt = chooseAttacks();
     charAtt.name = "char-attack[]"
@@ -199,16 +228,16 @@ function renderCharacter(char){
 
     switch(char.focus){
         case 'fire':
-            focus.className = "mdi mdi-fire"
+            focus.className = "mdi mdi-fire 36px"
             break;
         case 'ice':
-            focus.className = "mdi mdi-snowflake"
+            focus.className = "mdi mdi-snowflake 36px"
             break;
         case 'earth':
-            focus.className = "mdi mdi-basecamp"
+            focus.className = "mdi mdi-basecamp 36px"
             break;
         case 'water':
-            focus.className = "mdi mdi-water"
+            focus.className = "mdi mdi-water 36px"
             break;
     }
 
@@ -226,7 +255,9 @@ function chooseAttacks(){
     let inputAttack = document.createElement("select")
     inputAttack.setAttribute("multiple", "multiple")
 
-    attacks.forEach(attack => {
+    let fireAttacks = attacks.filter(att => att.element === "fire" || att.element === "none" || att.element === "medic")
+
+    fireAttacks.forEach(attack => {
         var attackOp = document.createElement("option")
         attackOp.value = attack.id
         attackOp.textContent = attack.name
@@ -240,4 +271,22 @@ function clear(item){
     while(item.firstChild){
         item.removeChild(item.firstChild)
     }
+}
+
+function filterAtt(e){
+    let attacbar = e.target.parentNode.querySelector("select[name='char-attack[]']")
+    let filter = e.target.value
+
+    clear(attacbar)
+
+    let filteredAttacks = attacks.filter(att => att.element === filter || att.element === "none" || att.element === "medic")
+
+    filteredAttacks.forEach(attack => {
+        var attackOp = document.createElement("option")
+        attackOp.value = attack.id
+        attackOp.textContent = attack.name
+        attacbar.appendChild(attackOp)
+    })
+
+
 }

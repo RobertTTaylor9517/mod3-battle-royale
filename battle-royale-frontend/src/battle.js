@@ -5,6 +5,7 @@ let i = 0
 let play 
 let currAttack = {}
 let players = []
+const delay = ms => new Promise(res => setTimeout(res, ms))
 
 let main = document.getElementById("main")
 let midDiv = document.createElement("div")
@@ -145,6 +146,7 @@ function createAttackList(active, playerCard){
 
         div.appendChild(button)
     })
+    charN.className ="title centered"
    
     midDiv.appendChild(charN)
     midDiv.appendChild(div)
@@ -159,40 +161,58 @@ function selectTarget(e){
 
     let enemies = document.querySelectorAll(".enemy-card")
 
-    enemies.forEach(enemy => {
-        enemy.addEventListener("click", attackEnem)
-    })
+    if(e.target.dataset.type === "medic"){
+        players.forEach(char => {
+            let tarButton = document.createElement("button")
+            tarButton.setAttribute("align", "right")
+            tarButton.className = "del-button"
+            tarButton.textContent = "X"
+
+            tarButton.addEventListener("click", healMag)
+            char.appendChild(tarButton)
+        })
+    }else{
+        enemies.forEach(enemy => {
+            let tarButton = document.createElement("button")
+            tarButton.setAttribute("align", "left")
+            tarButton.className = "del-button"
+            tarButton.textContent = "X"
+
+            tarButton.addEventListener("click", attackEnem)
+            enemy.appendChild(tarButton)
+        })
+    }
 }
 
 function attackEnem(e){
-    let attacked = selectDungeon.floors[j].enemies.find(enem => enem.id === parseInt(e.target.dataset.enemId))
+    let attacked = selectDungeon.floors[j].enemies.find(enem => enem.id === parseInt(e.target.parentNode.dataset.enemId))
 
     // debugger;
     console.log(`attacked ${attacked.name}`)
 
     if(attacked.weakness === currAttack.element){
-        e.target.querySelector(".enemy-health").textContent = parseInt(e.target.querySelector(".enemy-health").textContent) - (currAttack.damage * 2)
-        if(parseInt(e.target.querySelector(".enemy-health").textContent) <= 0){
-            e.target.remove()
+        e.target.parentNode.querySelector(".enemy-health").textContent = parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) - (currAttack.damage * 2)
+        if(parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) <= 0){
+            e.target.parentNode.remove()
 
         } 
     }else{
-        e.target.querySelector(".enemy-health").textContent = parseInt(e.target.querySelector(".enemy-health").textContent) - (currAttack.damage)
-        if(parseInt(e.target.querySelector(".enemy-health").textContent) <= 0){
-            e.target.remove()
+        e.target.parentNode.querySelector(".enemy-health").textContent = parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) - (currAttack.damage)
+        if(parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) <= 0){
+            e.target.parentNode.remove()
         } 
     }
 
-    
+    removeTargets();
     console.log(`This is i ${i}`)
     i++
     clear(midDiv)
 
-    if(i === players.length){
-        eAttack();
-    }else if(document.querySelectorAll(".enemy-card").length === 0){
+    if(document.querySelectorAll(".enemy-card").length === 0){
         j++
         startFloor();
+    }else if(i === players.length){
+        eAttack();
     } else {
         cAttack();
     }
@@ -201,21 +221,42 @@ function attackEnem(e){
     
 }
 
+function healMag(e){
+    // debugger
+    e.target.parentNode.querySelector(".char-health").textContent = parseInt(e.target.parentNode.querySelector(".char-health").textContent) + (currAttack.damage)
+    // debugger;
+
+    removeTargets();
+    console.log(`This is i ${i}`)
+    i++
+    clear(midDiv)
+
+    if(i === players.length){
+        eAttack();
+    } else {
+        cAttack();
+    }
+}
+
 function eAttack(){
     console.log("enemies attacking")
     let enemies = document.querySelectorAll(".enemy-card")
-
+    let seconds = 0
     enemies.forEach(enemy => {
+        seconds += 2000
         let enemar = selectDungeon.floors[j].enemies.find(ene => ene.id === parseInt(enemy.dataset.enemId))
-        attackPlayer(enemar);
+        setTimeout(()=>{
+            console.log("Timeout")
+            clear(midDiv)
+            attackPlayer(enemar)}, seconds)
     })
 
     i = 0
-    cAttack();
+    setTimeout(cAttack, 2000 * enemies.length)
 }
 
 function attackPlayer(enemy){
-    
+
    let num = Math.floor(Math.random() * enemy.attacks.length)
    let target = Math.floor(Math.random() * players.length)
 
@@ -226,10 +267,24 @@ function attackPlayer(enemy){
        element: attack.element
    }
 
+   let h = document.createElement("h3")
+   h.className = "title centered"
+   h.textContent = `${enemy.name} attacks`
+   midDiv.appendChild(h)
+   console.log("attacked")
+
+
    players[target].querySelector(".char-health").textContent = parseInt(players[target].querySelector(".char-health").textContent - currAttack.damage)
    if(parseInt(players[target].querySelector(".char-health").textContent) <= 0){
        players[target].remove();
    }
 
 
+}
+
+function removeTargets(){
+    let tarButtons = document.querySelectorAll(".del-button")
+    tarButtons.forEach(but => {
+        but.remove();
+    })
 }
