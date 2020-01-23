@@ -8,13 +8,16 @@ let players = []
 
 let main = document.getElementById("main")
 let midDiv = document.createElement("div")
+midDiv.className = "column"
 midDiv.setAttribute("align", "middle")
 let rightDiv = document.createElement("div")
+rightDiv.className = "column"
 rightDiv.setAttribute("align", "right")
 let leftDiv = document.createElement("div")
+leftDiv.className = "column"
 leftDiv.setAttribute("align", "left")
-main.appendChild(midDiv)
 main.appendChild(leftDiv)
+main.appendChild(midDiv)
 main.appendChild(rightDiv)
 
 
@@ -70,6 +73,8 @@ function startDungeon(e){
 
 function startFloor(){
     i = 0
+    clear(midDiv)
+    clear(rightDiv)
     renderEnemies(selectDungeon.floors[j])
     startBattle()
     
@@ -104,12 +109,12 @@ function renderEnemies(floor){
 }
 
 function startBattle(){
-    players = document.querySelectorAll(".character-card")
     cAttack();
 
 }
 
 function cAttack(){
+    players = document.querySelectorAll(".character-card")
     let charId = players[i].dataset.charId
         // debugger;
     let active = team.find(char => char.id === parseInt(charId))
@@ -162,12 +167,14 @@ function selectTarget(e){
 function attackEnem(e){
     let attacked = selectDungeon.floors[j].enemies.find(enem => enem.id === parseInt(e.target.dataset.enemId))
 
-    debugger;
+    // debugger;
+    console.log(`attacked ${attacked.name}`)
 
     if(attacked.weakness === currAttack.element){
         e.target.querySelector(".enemy-health").textContent = parseInt(e.target.querySelector(".enemy-health").textContent) - (currAttack.damage * 2)
         if(parseInt(e.target.querySelector(".enemy-health").textContent) <= 0){
             e.target.remove()
+
         } 
     }else{
         e.target.querySelector(".enemy-health").textContent = parseInt(e.target.querySelector(".enemy-health").textContent) - (currAttack.damage)
@@ -176,7 +183,53 @@ function attackEnem(e){
         } 
     }
 
+    
+    console.log(`This is i ${i}`)
     i++
     clear(midDiv)
+
+    if(i === players.length){
+        eAttack();
+    }else if(document.querySelectorAll(".enemy-card").length === 0){
+        j++
+        startFloor();
+    } else {
+        cAttack();
+    }
+
+    
+    
+}
+
+function eAttack(){
+    console.log("enemies attacking")
+    let enemies = document.querySelectorAll(".enemy-card")
+
+    enemies.forEach(enemy => {
+        let enemar = selectDungeon.floors[j].enemies.find(ene => ene.id === parseInt(enemy.dataset.enemId))
+        attackPlayer(enemar);
+    })
+
+    i = 0
     cAttack();
+}
+
+function attackPlayer(enemy){
+    
+   let num = Math.floor(Math.random() * enemy.attacks.length)
+   let target = Math.floor(Math.random() * players.length)
+
+   let attack = attacks.find(att => att.id === parseInt(enemy.attacks[num]))
+
+   currAttack = {
+       damage: attack.damage,
+       element: attack.element
+   }
+
+   players[target].querySelector(".char-health").textContent = parseInt(players[target].querySelector(".char-health").textContent - currAttack.damage)
+   if(parseInt(players[target].querySelector(".char-health").textContent) <= 0){
+       players[target].remove();
+   }
+
+
 }

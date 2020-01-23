@@ -1,0 +1,20 @@
+.row {
+    display: flex;
+}
+
+.column {
+    flex: 33%;
+    padding: 10px;
+}
+
+.character-card {
+    border-style: double;
+    background-color: black;
+    color: white;
+}
+
+.enemy-card {
+    border-style: dotted dashed solid double;
+    background-color: black;
+    color: white;
+}
