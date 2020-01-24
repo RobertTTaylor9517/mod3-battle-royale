@@ -265,6 +265,8 @@ function eAttack(){
 }
 
 function attackPlayer(enemy){
+    
+    players = document.querySelectorAll(".character-card")
 
    let num = Math.floor(Math.random() * enemy.attacks.length)
    let target = Math.floor(Math.random() * players.length)
