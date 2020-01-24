@@ -91,22 +91,38 @@ function renderUsers(json){
 
 function renderUser(use){
 
+    let div = document.createElement("div")
+    // div.className = "centered"
+
     let button = document.createElement("button")
-    button.className = "centeredAl"
     button.textContent = use.username
     button.dataset.userId = use.id 
     console.log(button)
+
+    let delButton = document.createElement("button")
+    delButton.textContent = "X"
+    delButton.dataset.userId = use.id 
+    delButton.addEventListener("click", delUser)
+
     button.addEventListener("click",(e) => {
         user = e.target.dataset.userId
         startNext(user)
     })
 
-    let br = document.createElement("br")
-    let br2 = document.createElement("br2")
+   
+    div.appendChild(button)
+    div.appendChild(delButton)
+    mainDiv.appendChild(div)
+}
 
-    mainDiv.appendChild(br2)
-    mainDiv.appendChild(button)
-    mainDiv.appendChild(br)
+function delUser(e){
+    fetch(`http://localhost:3000/users/${e.target.dataset.userId}`, {
+        method: "DELETE"
+    })
+    .then(resp => resp.text())
+    .then(text => {
+        e.target.parentNode.remove()
+    })
 }
 
 

@@ -69,19 +69,29 @@ function createTeam(e){
 }
 
 function renderTeam(use){
+    let div = document.createElement("div")
+
     let button = document.createElement("button")
     button.textContent = use.name
     button.dataset.userId = use.id 
     console.log(button)
+
     button.addEventListener("click",(e) => {
         team_id = e.target.dataset.userId
         nextChar()
     })
 
+    let delButton = document.createElement("button")
+    delButton.textContent = "X"
+    delButton.dataset.userId = use.id
+    delButton.addEventListener("click", delTeam)
+
     let br = document.createElement("br")
 
-    leftDiv.appendChild(button)
-    leftDiv.appendChild(br)
+    div.appendChild(button)
+    div.appendChild(delButton)
+    
+    leftDiv.appendChild(div)
 }
 
 function renderTeams(){
@@ -228,16 +238,16 @@ function renderCharacter(char){
 
     switch(char.focus){
         case 'fire':
-            focus.className = "mdi mdi-fire 36px"
+            focus.className = "mdi mdi-fire mdi-36px"
             break;
         case 'ice':
-            focus.className = "mdi mdi-snowflake 36px"
+            focus.className = "mdi mdi-snowflake mdi-36px"
             break;
         case 'earth':
-            focus.className = "mdi mdi-basecamp 36px"
+            focus.className = "mdi mdi-basecamp mdi-36px"
             break;
         case 'water':
-            focus.className = "mdi mdi-water 36px"
+            focus.className = "mdi mdi-water mdi-36px"
             break;
     }
 
@@ -289,4 +299,14 @@ function filterAtt(e){
     })
 
 
+}
+
+function delTeam(e){
+    fetch(`http://localhost:3000/teams/${e.target.dataset.userId}`, {
+        method: "DELETE"
+    })
+    .then(resp => resp.text())
+    .then(text => {
+        e.target.parentNode.remove()
+    })
 }

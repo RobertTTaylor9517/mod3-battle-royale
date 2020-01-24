@@ -6,6 +6,12 @@ class TeamsController < ApplicationController
         end
     end
 
+    def delete
+        team = Team.find_by(id: params[:id])
+        team.destroy
+        render json: team 
+    end
+
 private
 
     def team_params

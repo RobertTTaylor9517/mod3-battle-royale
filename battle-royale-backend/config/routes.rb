@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   post "/characters", to: "characters#create"
   get "/dungeons", to: "dungeons#index"
   get "/dungeons/:id", to: "dungeons#show"
+  delete "/users/:id", to: "users#delete"
+  delete "teams/:id", to: "teams#delete"
 end

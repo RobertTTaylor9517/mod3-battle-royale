@@ -115,6 +115,7 @@ function startBattle(){
 }
 
 function cAttack(){
+    clear(midDiv)
     players = document.querySelectorAll(".character-card")
     let charId = players[i].dataset.charId
         // debugger;
@@ -185,6 +186,7 @@ function selectTarget(e){
 }
 
 function attackEnem(e){
+    let alive = true
     let attacked = selectDungeon.floors[j].enemies.find(enem => enem.id === parseInt(e.target.parentNode.dataset.enemId))
 
     // debugger;
@@ -192,18 +194,25 @@ function attackEnem(e){
 
     if(attacked.weakness === currAttack.element){
         e.target.parentNode.querySelector(".enemy-health").textContent = parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) - (currAttack.damage * 2)
-        if(parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) <= 0){
-            e.target.parentNode.remove()
-
-        } 
     }else{
         e.target.parentNode.querySelector(".enemy-health").textContent = parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) - (currAttack.damage)
-        if(parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) <= 0){
-            e.target.parentNode.remove()
-        } 
     }
+    let quickId = e.target.parentNode.dataset.enemId
 
-    removeTargets();
+    if(parseInt(e.target.parentNode.querySelector(".enemy-health").textContent) <= 0){
+        e.target.parentNode.remove()
+        removeTargets()
+        alive = false
+    } 
+
+    
+    if(alive === true){
+        // debugger
+        removeTargets();
+        animateCSS(`div[data-enem-id='${quickId}']`, 'shake')
+    }
+    
+
     console.log(`This is i ${i}`)
     i++
     clear(midDiv)
@@ -275,8 +284,23 @@ function attackPlayer(enemy){
 
 
    players[target].querySelector(".char-health").textContent = parseInt(players[target].querySelector(".char-health").textContent - currAttack.damage)
+
+   let tempId = players[target].dataset.charId
+   animateCSS(`div[data-char-id="${tempId}"]`, 'shake')
+
    if(parseInt(players[target].querySelector(".char-health").textContent) <= 0){
        players[target].remove();
+       if(players.length === 0){
+           clear(leftDiv)
+           clear(midDiv)
+           clear(rightDiv)
+
+           let gameO = document.createElement("h6")
+           gameO.textContent = "GAME OVER"
+           gameO.className = "title centered"
+
+           midDiv.appendChild(gameO)
+       }
    }
 
 
@@ -287,4 +311,30 @@ function removeTargets(){
     tarButtons.forEach(but => {
         but.remove();
     })
+}
+
+function win(){
+    clear(leftDiv)
+    clear(rightDiv)
+    clear(midDiv)
+
+    let gameW = document.createElement("h6")
+    gameW.textContent = "YOU WIN"
+    gameW.className = "title centered"
+
+    midDiv.appendChild(gameW)
+}
+
+function animateCSS(element, animationName, callback) {
+    const node = document.querySelector(element)
+    node.classList.add('animated', animationName)
+
+    function handleAnimationEnd() {
+        node.classList.remove('animated', animationName)
+        node.removeEventListener('animationend', handleAnimationEnd)
+
+        if (typeof callback === 'function') callback()
+    }
+
+    node.addEventListener('animationend', handleAnimationEnd)
 }
